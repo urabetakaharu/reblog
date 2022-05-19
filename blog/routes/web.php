@@ -11,8 +11,26 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-    
-});
-Route::get('/posts', 'PostController@index');
+
+
+
+
+
+Route::group(['middleware' => ['auth']], function()
+    {
+        Route::get('/', 'PostController@index')->middleware('auth');
+        Route::get('post','PostController@show');
+        // {}は何でもいい、{Post}と同名の場合は勝手にgetされる
+        
+        Route::get('/posts/create', 'PostController@create');
+        Route::delete('/posts/{post}', 'PostController@delete');
+        Route::get('/posts/{abc}', 'PostController@show');
+        Route::post('/posts', 'PostController@store');
+        Route::get('/posts/{post}/edit', 'PostController@edit');
+        Route::put('/posts/{post}', 'PostController@update');
+        Route::get('/categories/{category}', 'CategoryController@index');
+        Route::get('/home', 'HomeController@index')->name('home');
+    });
+
+
+Auth::routes();
